@@ -1,0 +1,7 @@
+# CMD upload to docker
+# docker exec -it ldap-server ldapmodify -x -D "cn=admin,dc=master,dc=com" -W -f /tmp/modify.ldif
+
+dn: cn=Lucas,ou=team2,dc=master,dc=com
+changetype: modify
+replace: mail
+mail: lucas@newdomain.com

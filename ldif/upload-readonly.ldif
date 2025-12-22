@@ -1,0 +1,29 @@
+# =====================================================
+# 정보 보충용 (Read-Only) - Keycloak이 자체 인증 처리
+# LDAP에서 사용자 정보만 가져옴 (비밀번호 없음)
+# =====================================================
+# docker exec -it ldap-server ldapadd -x -D "cn=admin,dc=master,dc=com" -W -f /tmp/upload-readonly.ldif
+
+dn: ou=team1,dc=master,dc=com
+objectClass: organizationalUnit
+ou: team1
+
+dn: ou=team2,dc=master,dc=com
+objectClass: organizationalUnit
+ou: team2
+
+dn: cn=Alice,ou=team1,dc=master,dc=com
+objectClass: inetOrgPerson
+cn: Alice
+sn: Martinez
+mail: alice@master.com
+uid: alice
+displayName: Alice Martinez
+
+dn: cn=Lucas,ou=team2,dc=master,dc=com
+objectClass: inetOrgPerson
+cn: Lucas
+sn: Silva
+mail: lucas@master.com
+uid: lucas
+displayName: Lucas Silva

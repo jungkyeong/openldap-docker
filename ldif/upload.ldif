@@ -1,0 +1,26 @@
+# CMD upload to docker
+# docker exec -it ldap-server ldapadd -x -D "cn=admin,dc=master,dc=com" -W -f /tmp/upload.ldif
+
+# dn: dc=master,dc=com
+# objectClass: organization
+# o: Example Company
+
+dn: ou=team1,dc=master,dc=com
+objectClass: organizationalUnit
+ou: team1
+
+dn: ou=team2,dc=master,dc=com
+objectClass: organizationalUnit
+ou: team2
+
+dn: cn=Alice,ou=team1,dc=master,dc=com
+objectClass: inetOrgPerson
+cn: Alice
+sn: Martinez
+mail: alice@master.com
+
+dn: cn=Lucas,ou=team2,dc=master,dc=com
+objectClass: inetOrgPerson
+cn: Lucas
+sn: Silva
+mail: lucas@master.com

@@ -1,0 +1,31 @@
+# =====================================================
+# 직접 인증용 (Bind) - LDAP 서버가 직접 인증 처리
+# userPassword 포함 - Keycloak이 LDAP으로 인증 위임
+# =====================================================
+# docker exec -it ldap-server ldapadd -x -D "cn=admin,dc=master,dc=com" -W -f /tmp/upload-auth.ldif
+
+dn: ou=team1,dc=master,dc=com
+objectClass: organizationalUnit
+ou: team1
+
+dn: ou=team2,dc=master,dc=com
+objectClass: organizationalUnit
+ou: team2
+
+dn: cn=Alice,ou=team1,dc=master,dc=com
+objectClass: inetOrgPerson
+cn: Alice
+sn: Martinez
+mail: alice@master.com
+uid: alice
+displayName: Alice Martinez
+userPassword: alice123
+
+dn: cn=Lucas,ou=team2,dc=master,dc=com
+objectClass: inetOrgPerson
+cn: Lucas
+sn: Silva
+mail: lucas@master.com
+uid: lucas
+displayName: Lucas Silva
+userPassword: lucas123
