@@ -38,7 +38,6 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # LDAP 관리자 및 설정 비밀번호 환경 변수
-# 초기 생성할 루트 DN
 ENV LDAP_ADMIN_PASSWORD=admin123
 ENV LDAP_DOMAIN=master.com
 ENV LDAP_ORGANIZATION="My Organization"
@@ -74,16 +73,23 @@ RUN echo "slapd slapd/internal/generated_adminpw password ${LDAP_ADMIN_PASSWORD}
     # 최종 적용
     dpkg-reconfigure -f noninteractive slapd
 
-# 생성용, 수정용 LDIF 파일 등록
-COPY ldif/upload.ldif /tmp/upload.ldif
-COPY ldif/modify.ldif /tmp/modify.ldif
+# 설정 백업 (볼륨 마운트 전 원본 보존)
+RUN cp -r /etc/ldap/slapd.d /etc/ldap/slapd.d.orig
 
-# 초기화 스크립트 등록
-## COPY init-ldap.sh /tmp/init-ldap.sh
-## RUN chmod +x /tmp/init-ldap.sh
+# LDIF 파일 등록
+COPY ldif/ /tmp/ldif/
+
+# 스크립트 등록
+COPY script/ /tmp/script/
+RUN find /tmp/script -name "*.sh" -exec chmod +x {} \;
+
+# entrypoint 스크립트 등록
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # 포트 open
 EXPOSE 389
 
-# openLDAP 서버 실행(openldap이라는 그룹 및 사용자명으로 Debug 레벨을 256(통계 정보 출력)으로 실행)
-CMD ["slapd", "-h", "ldap://0.0.0.0:389", "-g", "openldap", "-u", "openldap", "-F", "/etc/ldap/slapd.d", "-d", "256"]
+# 볼륨 선언
+VOLUME ["/var/lib/ldap", "/etc/ldap/slapd.d"]
+ENTRYPOINT ["/entrypoint.sh"]
