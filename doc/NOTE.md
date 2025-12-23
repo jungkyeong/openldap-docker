@@ -44,7 +44,11 @@
 
 ### 비밀번호 암호화 방식
 - create/inetOrgPerson.sh에서 조직원 생성 시, 비밀번호 SSHA 방식으로 저장
-- openssl 지원 요구
+- SSHA:솔트와 SHA 해시 함수가 결합된 형태
+      - 비밀번호: password
+      - 솔트: random
+      - 과정: SHA1("password" + "random") -> 결과값
+      - 최종 저장 형태: {SSHA}결과값+솔트 (Base64로 인코딩됨)
 
 
 
