@@ -12,12 +12,14 @@ if [ -z "$OU_NAME" ]; then
     exit 1
 fi
 
+# ldapadd 명령어
 ldapadd -x -D "$LDAP_ADMIN_DN" -W <<EOF
 dn: ou=${OU_NAME},dc=master,dc=com
 objectClass: organizationalUnit
 ou: ${OU_NAME}
 EOF
 
+# 직전 명령어의 종료값($?)을 확인하여(-eq) 성공, 실패 여부 확인
 if [ $? -eq 0 ]; then
     echo "=== 부서 '${OU_NAME}' 생성 성공 ==="
 else

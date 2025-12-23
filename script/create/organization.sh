@@ -5,8 +5,7 @@
 # admin 접속 정보
 LDAP_ADMIN_DN="cn=admin,dc=master,dc=com"
 
-# 생성 요청
-# -W: 비밀번호 입력 받기
+# ldapadd 명령어
 ldapadd -x -D "$LDAP_ADMIN_DN" -W <<EOF
 dn: dc=master,dc=com
 objectClass: dcObject
@@ -15,6 +14,7 @@ dc: master
 o: Example Company
 EOF
 
+# 직전 명령어의 종료값($?)을 확인하여(-eq) 성공, 실패 여부 확인
 if [ $? -eq 0 ]; then
     echo "=== 조직 생성 성공 ==="
 else

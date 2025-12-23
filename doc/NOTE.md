@@ -1,6 +1,5 @@
-### LDAP 원리
+### 개요
 1. LDAP은 트리 구조의 DB라 생각하면 편함
-2. 
 
 ### 구성
 1. slapd
@@ -19,8 +18,8 @@
 - 엔트리의 전체 경로 (예: `cn=Alice,ou=team1,dc=master,dc=com`)
 - dc: 도메인 주소
 - ou: 그룹
-- cn: 개별 객체의 고유 이름
-- sn, mail: 객체 안에 들어가는 Attribute 정보 (미리 정의된 이름 안에서 사용 가능하며 굳이 새로운 항목의 이름을 추가하고 싶다면 스키마를 수정하여 확장 추가)
+- cn: 개별 객체의 고유 ID
+- sn, mail: 객체 안에 들어가는 Attribute 정보 (미리 정의된 항목 안에서 사용 가능하며 굳이 새로운 항목을 추가하고 싶다면 스키마를 수정하여 확장 추가)
 
 2. objectClass:
 - organization: 최상위 조직
@@ -43,7 +42,9 @@
    mail: alice@master.com        mail: lucas@master.com
 ```
 
-
+### 비밀번호 암호화 방식
+- create/inetOrgPerson.sh에서 조직원 생성 시, 비밀번호 SSHA 방식으로 저장
+- openssl 지원 요구
 
 
 

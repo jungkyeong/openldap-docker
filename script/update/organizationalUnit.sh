@@ -1,5 +1,5 @@
 #!/bin/bash
-# 부서 이동(이름 변경) 스크립트 - 하위 사용자 포함
+# 부서 이동 스크립트 - 하위 사용자 포함
 # 사용법: docker exec -it ldap-server bash /tmp/script/update/organizationalUnit.sh [기존부서] [새부서]
 # 예시: docker exec -it ldap-server bash /tmp/script/update/organizationalUnit.sh team1 team1-new
 
@@ -23,9 +23,9 @@ if [ -n "$EXISTS" ]; then
 fi
 
 # 하위 사용자 목록 조회
-USERS=$(ldapsearch -x -b "ou=${OLD_OU},dc=master,dc=com" -LLL "(objectClass=inetOrgPerson)" dn cn sn mail | grep -E "^(dn:|cn:|sn:|mail:)")
+USERS=$(ldapsearch -x -b "ou=${OLD_OU},dc=master,dc=com" -LLL "(objectClass=inetOrgPerson)" dn cn givenName sn mail userPassword | grep -E "^(dn:|cn:|givenName:|sn:|mail:|userPassword:)")
 
-echo "비밀번호를 입력하세요:"
+echo "admin 비밀번호를 입력하세요:"
 read -s LDAP_PASSWORD
 echo ""
 
@@ -46,19 +46,29 @@ fi
 USER_LIST=$(ldapsearch -x -b "ou=${OLD_OU},dc=master,dc=com" -LLL "(objectClass=inetOrgPerson)" dn | grep "^dn:" | sed 's/dn: //')
 
 for USER_DN in $USER_LIST; do
-    # 사용자 정보 추출
+    # 사용자 정보 추출 (admin 권한으로 조회 - userPassword 포함)
     CN=$(echo "$USER_DN" | sed 's/cn=\([^,]*\).*/\1/')
-    USER_INFO=$(ldapsearch -x -b "$USER_DN" -LLL)
+    USER_INFO=$(ldapsearch -x -D "$LDAP_ADMIN_DN" -w "$LDAP_PASSWORD" -b "$USER_DN" -LLL)
+    GIVEN_NAME=$(echo "$USER_INFO" | grep "^givenName:" | sed 's/givenName: //')
     SN=$(echo "$USER_INFO" | grep "^sn:" | sed 's/sn: //')
     MAIL=$(echo "$USER_INFO" | grep "^mail:" | sed 's/mail: //')
+    PASSWORD=$(echo "$USER_INFO" | grep "^userPassword:" | sed 's/userPassword: //')
 
     echo "이동 중: ${CN}"
 
     # 새 부서에 사용자 생성
+    GIVEN_NAME_LINE=""
+    MAIL_LINE=""
+    PASSWORD_LINE=""
+
+    if [ -n "$GIVEN_NAME" ]; then
+        GIVEN_NAME_LINE="givenName: ${GIVEN_NAME}"
+    fi
     if [ -n "$MAIL" ]; then
         MAIL_LINE="mail: ${MAIL}"
-    else
-        MAIL_LINE=""
+    fi
+    if [ -n "$PASSWORD" ]; then
+        PASSWORD_LINE="userPassword: ${PASSWORD}"
     fi
 
     ldapadd -x -D "$LDAP_ADMIN_DN" -w "$LDAP_PASSWORD" <<EOF
@@ -66,7 +76,9 @@ dn: cn=${CN},ou=${NEW_OU},dc=master,dc=com
 objectClass: inetOrgPerson
 cn: ${CN}
 sn: ${SN}
+${GIVEN_NAME_LINE}
 ${MAIL_LINE}
+${PASSWORD_LINE}
 EOF
 
     # 기존 사용자 삭제
