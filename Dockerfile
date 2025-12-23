@@ -51,7 +51,6 @@ RUN apt-get update && apt-get install -y \
     slapd \
     ldap-utils \
     vim \
-    openssl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

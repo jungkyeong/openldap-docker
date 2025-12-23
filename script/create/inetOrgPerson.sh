@@ -49,7 +49,7 @@ if [ "$SET_PASSWORD" = "true" ]; then
         exit 1
     fi
 
-    # slappasswd를 사용한 SSHA 해시 생성 (OpenLDAP 표준 방식)
+    # slappasswd를 사용한 SSHA 해시 생성
     HASHED_PASSWORD=$(slappasswd -s "$PASSWORD1")
     PASSWORD_LINE="userPassword: ${HASHED_PASSWORD}"
 fi

@@ -54,6 +54,7 @@
 5. User 수동 동기화
 - Realm -> User federation -> LDAP 클릭 -> 우측 상단의 Action 드롭 박스 클릭 Sync all users 클릭
 - 동기화 시, Keycloak에서 자동으로 판별하여 중복되는 이메일이나 다른 경우는 올리지 않음 
+- 가끔 동기화가 잘 안 되는 것 같으면 keycloak 에 있는 ldap user 정보 지운 다음에 다시 시도
 
 6. 자동 동기화
 - Realm -> User federation -> Periodic full sync On 선택 -> Full sync period 설정 (ex. 초 단위임. 300 이면 5분)
